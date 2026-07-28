@@ -1,0 +1,98 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Open-CMSIS-Pack/devtools/tools/projmgr/2.6.0/tools/projmgr/schemas/cproject.schema.json
+project:
+  groups:
+    - group: App
+      files:
+        - file: main.c
+        - file: power_management/power_management.c
+        - file: camera/camera.c
+        - file: logo/alif_logo.c
+        - file: jpeg_app.c
+    
+    - group: FatFS
+      files:
+        - file: FatFS/diskio.c
+        - file: FatFS/ff.c
+        - file: FatFS/ffsystem.c
+        - file: FatFS/ffunicode.c
+        - file: FatFS/diskio.h
+        - file: FatFS/ff.h
+        - file: FatFS/ffconf.h
+    
+    - group: ImageProcessingLibraryIntegration
+      files:
+        - file: display/disp.c
+
+    - group: Board
+      files:
+        - file: ../libs/common_app_utils/logging/uart_tracelib.c
+        - file: ../libs/common_app_utils/logging/retarget.c
+        - file: ../libs/common_app_utils/fault_handler/fault_handler.c
+    
+  add-path:
+    - .
+    - power_management
+    - camera
+    # - graphics
+    - display
+    - logo
+    - ../libs/common_app_utils/logging
+    - ../libs/common_app_utils/fault_handler
+    - ../libs/common_app_utils/profiling
+    - FatFS
+
+  output:
+    base-name: $Project$
+    type:
+      - elf
+      - bin
+
+  layers:
+    - layer: $BoardLayer$
+
+  packs:
+    - pack: AlifSemiconductor::Dave2DDriver@2.0.3
+    - pack: AlifSemiconductor::AIPL@1.3.5
+    - pack: AlifSemiconductor::Ensemble@2.2.0
+  
+  components:
+    - component: ARM::CMSIS:CORE
+    - component: AlifSemiconductor::Device:Startup
+    - component: AlifSemiconductor::Device:SOC Peripherals:PINCONF
+    - component: AlifSemiconductor::Device:SOC Peripherals:GPIO
+    - component: AlifSemiconductor::CMSIS Driver:USART
+    - component: Services:Secure Enclave:core&Source
+    - component: Services:Secure Enclave:Initialization Helper&Source
+    - component: AlifSemiconductor::Device:SOC Peripherals:MHU
+    - component: AlifSemiconductor::Device:SOC Peripherals:DMA
+    - component: AlifSemiconductor::Device:SOC Peripherals:SDMMC
+  
+    - component: AlifSemiconductor::Device:SOC Peripherals:CDC
+    - component: AlifSemiconductor::Device:SOC Peripherals:CPI
+    - component: AlifSemiconductor::Device:SOC Peripherals:ISP
+    - component: AlifSemiconductor::Device:SOC Peripherals:JPEG
+
+    - component: AlifSemiconductor::Device:SOC Peripherals:MIPI DSI CSI2 DPHY
+    - component: AlifSemiconductor::Device:SOC Peripherals:MIPI CSI2
+    - component: AlifSemiconductor::Device:SOC Peripherals:MIPI DSI
+
+    - component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor MT9M114
+    # - component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor ARX3A0
+    #- component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor OV5675
+
+    - component: AlifSemiconductor::BSP:External peripherals:ILI9806E LCD panel
+
+    # D/AVE2D driver
+    - component: AlifSemiconductor::Graphics:DAVE2D:Layer2
+    - component: AlifSemiconductor::Graphics:DAVE2D:Layer1
+    - component: AlifSemiconductor::Graphics:DAVE2D:Layer0Lib
+
+    # AIPL
+    - component: AlifSemiconductor::Graphics:AIPL:Essential
+    - component: AlifSemiconductor::Graphics:AIPL:Basic
+    # - component: AlifSemiconductor::Graphics:Acceleration:Dave2d
+    # - component: AlifSemiconductor::Graphics:AIPL:Color correction
+    - component: AlifSemiconductor::Graphics:AIPL:Color conversion
+    # - component: AlifSemiconductor::Graphics:AIPL:Demosaic
+    - component: AlifSemiconductor::CMSIS Driver:I2C
+ 
