@@ -514,16 +514,29 @@
 // <i> Height in pixels of the ISP scaler output (after scaling from sensor dimensions).
 #define RTE_ISP_OUTPUT_HEIGHT   480
 
+#include "RTE_Components.h"
+#if defined(RTE_Drivers_CAMERA_SENSOR_OV5675)
 // <o> ISP Sensor Input Width
 // <i> Width in pixels of the sensor input to the ISP pipeline.
 // <i> Default: MT9M114 sensor resolution (1280). Change for different sensors.
-#define RTE_ISP_SENSOR_INPUT_WIDTH  RTE_MT9M114_CAMERA_SENSOR_FRAME_WIDTH
-
-
+#define RTE_ISP_SENSOR_INPUT_WIDTH  RTE_OV5675_CAMERA_SENSOR_FRAME_WIDTH
 // <o> ISP Sensor Input Height
 // <i> Height in pixels of the sensor input to the ISP pipeline.
 // <i> Default: MT9M114 sensor resolution (720). Change for different sensors.
+#define RTE_ISP_SENSOR_INPUT_HEIGHT RTE_OV5675_CAMERA_SENSOR_FRAME_HEIGHT
+
+#elif defined(RTE_Drivers_CAMERA_SENSOR_MT9M114)
+#define RTE_ISP_SENSOR_INPUT_WIDTH  RTE_MT9M114_CAMERA_SENSOR_FRAME_WIDTH
 #define RTE_ISP_SENSOR_INPUT_HEIGHT RTE_MT9M114_CAMERA_SENSOR_FRAME_HEIGHT
+
+#elif defined(RTE_Drivers_CAMERA_SENSOR_ARX3A0)
+#define RTE_ISP_SENSOR_INPUT_WIDTH  RTE_ARX3A0_CAMERA_SENSOR_FRAME_WIDTH
+#define RTE_ISP_SENSOR_INPUT_HEIGHT RTE_ARX3A0_CAMERA_SENSOR_FRAME_HEIGHT
+
+#else
+#define RTE_ISP_SENSOR_INPUT_WIDTH  RTE_OV5675_CAMERA_SENSOR_FRAME_WIDTH
+#define RTE_ISP_SENSOR_INPUT_HEIGHT RTE_OV5675_CAMERA_SENSOR_FRAME_HEIGHT
+#endif
 
 // <o> ISP Crop Top offset <0-4095>
 // <i> Top offset in pixels for the cropped output window

@@ -62,9 +62,9 @@ project:
     - component: AlifSemiconductor::Device:SOC Peripherals:MIPI CSI2
     - component: AlifSemiconductor::Device:SOC Peripherals:MIPI DSI
 
-    - component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor MT9M114
+    # - component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor MT9M114
     # - component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor ARX3A0
-    #- component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor OV5675
+    - component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor OV5675
 
     - component: AlifSemiconductor::BSP:External peripherals:ILI9806E LCD panel
 

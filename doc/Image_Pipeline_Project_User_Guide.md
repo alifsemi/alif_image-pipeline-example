@@ -1,11 +1,21 @@
 # Image Pipeline Project User Guide  
 This project demonstrates the E8 image-processing pipeline, from camera capture to image processing, JPEG compression, display, and storage. The capture flow is similar to the viewfinder project, while this application emphasizes JPEG encoding and image storage.  
-The project is prepared for the MT9M114 camera and the following builds. Support can be extended to the HE core.    
+The project is tested with the MT9M114 and OV5675 cameras for the following builds. Support can be extended to the HE core.   
 > AppKit-E8 HP -- image_pipeline_mram  
 > DevKit-E8 HP -- image_pipeline_sd_fatfs (insert an SD card into the slot)  
 
-When mounting the camera, use the connector on the side opposite the processor.  
-Magnetoresistive RAM (MRAM) is non-volatile storage available on many Alif Semiconductor SoCs. It can be used similarly to Flash.  
+Both AppKit-E8 and DevKit-E8 boards have two mounting options: Selfie and standard. The port on the same side as the SoC is referred as the Standard port, and the one on the opposite side is referred as the Selfie port. Please refer to the following tables for viable mounting options:  
+| OV5675    | Selfie | Std. |
+| --------- | ------ | ---- |
+| AppKit-E8 | ✅ | ✅ |
+| DevKit-E8 | ✅ | ❌ |
+
+| MT9M114   | Selfie | Std. |
+| --------- | ------ | ---- |
+| AppKit-E8 | ✅ | ❌ |
+| DevKit-E8 | ✅ | ❌ |  
+
+The Magnetoresistive RAM (MRAM) is non-volatile storage available on many Alif Semiconductor SoCs. It can be used similarly to Flash.  
 
 ## 1. Introduction  
 The peripherals and data flow used in this project are summarized in the following figure.  
@@ -32,8 +42,8 @@ flowchart LR
     click-->S1[MRAM/SD]
 ```  
 
-On the capture side, the camera sensor outputs 1280x720 RAW8 frames through CSI/CPI. After CPI (Camera Parallel Interface), the SoC can either write data directly to SRAM through AXI or route it to the ISP (Image Signal Processor). The on-chip ISP provides basic processing features such as binning, color correction, and format conversion. In this example, the ISP converts the image to YUV420SP (NV12), and the output is stored in SRAM.  
-The Helium core then converts NV12 to RGB565 for LCD compatibility. Two display buffers are used for ping-pong operation: buffer A receives the latest frame while buffer B is displayed, then they swap when a full frame is ready.  
+On the capture side, the camera sensor outputs RAW8 frames through CSI/CPI. Resolution is determined in the corresponding RTE_Device.h, selected camera section. After CPI (Camera Parallel Interface), the SoC can either write data directly to SRAM through AXI or route it to the ISP (Image Signal Processor). The on-chip ISP provides basic processing features such as binning, color correction, and format conversion. In this example, the CPI routes the frame to the ISP to convert the image to YUV420SP (NV12), and the output is stored in SRAM.  
+The Helium core then converts NV12 to RGB565 to display on the LCD. Two display buffers are used for ping-pong operation: buffer A receives the latest frame while buffer B is displayed, then they swap when a full frame is ready.  
 If the user button is pressed, the JPEG encoder compresses the NV12 image in SRAM and stores the result to MRAM or SD card.  
 Measured JPEG performance is about 500 MPixel/s, under 4 ms per conversion, and about 15 mW average power when encoding from SRAM.  
 
@@ -64,9 +74,11 @@ Open `<build_name>.cproject.yml`, locate `components`, and add:
 - component: AlifSemiconductor::Device:SOC Peripherals:MIPI DSI CSI2 DPHY
 - component: AlifSemiconductor::Device:SOC Peripherals:MIPI CSI2
 - component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor MT9M114
+# - component: AlifSemiconductor::BSP:External peripherals:CAMERA Sensor OV5675
 - component: AlifSemiconductor::CMSIS Driver:I2C
 ```
 You can switch the camera sensor to MT9M114, ARX3A0, or OV5675. You can also create a custom camera driver by following: [Custom camera module driver howto](https://github.com/alifsemi/alif_M55-viewfinder/blob/main/doc/camera_module.md) and [Integrating new panel and sensor](https://github.com/alifsemi/alif_M55-viewfinder/blob/main/doc/integrating_new_panel_and_sensor.md).  
+In this example, to switch between the MT9M114 and OV5675, simply comment out the one you don't need.
 
 You can also reuse the application-level camera code. Copy the [camera](../image_pipeline_mram/camera/) folder into your application and include the source file in `<build_name>.cproject.yml`. You can add it directly under the App group (`- file: camera/camera.c`) or place it in another group shown in the CMSIS panel.  
 
@@ -124,6 +136,26 @@ Saved files are written to the SD card root as `IMG_0001.jpeg`, `IMG_0002.jpeg`,
 If saving fails, check card detect/reset wiring and verify the card can be mounted by FatFS (`f_mount`).  
 
 ## 8 Release Build  
-The default configuration for both targets is `debug`. This configuration is not memory-optimized and runs from MRAM.  
+The default configuration for both targets is `debug`. This configuration is not optimized and executes from MRAM.  
 For better CPU performance (for example, AIPL NV12-to-RGB565 conversion), run critical code from ITCM by switching to a `release` build.  
-To enable `release`, open `linker_gnu_mram.ld.src` under the linker section in the CMSIS panel and remove the comment markers on the ITCM-related placement entries (line 90, 92, and 150).  
+To enable `release`, open `linker_gnu_mram.ld.src` under the linker section in the CMSIS panel and remove the comment markers on the ITCM-related placement entries.  
+```
+  .copy.table : ALIGN(4)
+  {
+    __copy_table_start__ = .;
+    LONG ( LOADADDR(.data.at_dtcm) )
+    LONG ( ADDR(.data.at_dtcm) )
+    LONG ( SIZEOF(.data.at_dtcm)/4 )
+/*    LONG ( LOADADDR(.code.at_itcm) )
+    LONG ( ADDR(.code.at_itcm) )
+    LONG ( SIZEOF(.code.at_itcm)/4 )*/
+    __copy_table_end__ = .;
+    . = ALIGN(16);
+  } > MRAM
+
+    .code.at_itcm : ALIGN(8)
+  {
+    *(.text*)
+    . = ALIGN(16);
+  } /*> ITCM AT*/ > MRAM
+  ```  
