@@ -34,7 +34,7 @@ solution:
       target-set:
         - set:
           images:
-            - project-context: image_pipeline_sd_fatfs.debug
+            - project-context: image_pipeline_sd_fatfs.release
 
     - type: AppKit-E8-HE
       device: Alif Semiconductor::AE822FA0E5597BS0:M55_HE
@@ -56,7 +56,7 @@ solution:
       target-set:
         - set:
           images:
-            - project-context: image_pipeline_mram.debug
+            - project-context: image_pipeline_mram.release
 
   build-types:
     - type: debug

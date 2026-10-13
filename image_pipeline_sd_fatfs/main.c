@@ -213,7 +213,8 @@ int main(void)
         printf("jpeg driver initialization fail.\r\n");
         __BKPT(2);
     }
-        
+    DCB->DEMCR |= DCB_DEMCR_TRCENA_Msk;
+    DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
     printf("\r\nAlifSemiconductor Image Pipeline Demo Application\r\n");
     printf(">>Hardware initialization successful.\r\n");
 
@@ -229,8 +230,10 @@ int main(void)
     while (ret == ARM_DRIVER_OK)
     {
         // Blink green LED
-        green_port->SetValue(BOARD_LEDRGB0_G_GPIO_PIN, GPIO_PIN_OUTPUT_STATE_TOGGLE);        
-
+        green_port->SetValue(BOARD_LEDRGB0_G_GPIO_PIN, GPIO_PIN_OUTPUT_STATE_TOGGLE);    
+        // save the last time_0 stamp to calculate a full camera cycle.
+        // because when the rest of the processings are done, the next frame is not ready yet.
+        uint32_t time_00 = time_0;
         time_0  = DWT->CYCCNT;
         ret = camera_capture();
         time_1  = DWT->CYCCNT;
@@ -261,13 +264,12 @@ int main(void)
             disp_next_frame_vsync();
             time_3  = DWT->CYCCNT;
             
-            printf("CPI+ISP: %.3fms, %.3fHz,", 
-                        (time_1-time_0) * 1000.0f / SystemCoreClock, 
-                        SystemCoreClock * 1.0f / (time_1-time_0));
+            printf("CPI+ISP: %.3fms,", 
+                        (time_1-time_0) * 1000.0f / SystemCoreClock);
             printf(" AIPL: %.3fms, Total: %.3fms, %.3fHz\r\n", 
                         (time_3-time_2) * 1000.0f / SystemCoreClock, 
                         (time_3-time_0) * 1000.0f / SystemCoreClock, 
-                        SystemCoreClock * 1.0f / (time_3-time_0));
+                        SystemCoreClock * 1.0f / (time_0-time_00));
             if(camera_triggered == true) 
             {
                 float t_comp_ms = (time_4-time_1) * 1000.0f / SystemCoreClock;

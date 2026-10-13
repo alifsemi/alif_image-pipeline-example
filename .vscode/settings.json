@@ -8,7 +8,4 @@
     "cortex-debug.variableUseNaturalFormat": false,
     "debug.hideSlowPreLaunchWarning": true,
     "debug.showInStatusBar": "never",
-    "clangd.arguments": [
-        "--compile-commands-dir=c:\\workspace\\AD-1505-image_pipeline\\PUBLIC-Image_Pipeline\\out\\image_pipeline_mram\\AppKit-E8-HP\\debug"
-    ],
 }

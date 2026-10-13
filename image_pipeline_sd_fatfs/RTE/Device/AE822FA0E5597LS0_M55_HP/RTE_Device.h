@@ -1721,7 +1721,7 @@
 // <o> CDC200 DPI interface FPS
 // <i> Defines CDC200 DPI interface Framrate per second.
 // <i> Default: 60
-#define RTE_CDC200_DPI_FPS        60
+#define RTE_CDC200_DPI_FPS        75
 
 // <o> Parallel ILI6122 LCD PANEL
 //     <0=> DISABLE

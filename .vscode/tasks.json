@@ -137,7 +137,7 @@
                 "echo Connect > .cmd.jlink &&",
                 "echo Erase >> .cmd.jlink &&",
                 "echo Exit >> .cmd.jlink &&",
-                "JLink.exe -device AE822FA0E5597BS0_M55_HP -if swd -speed 4000 -commandfile .cmd.jlink"
+                "JLink.exe -device AE822FA0E5597LS0_M55_HP -if swd -speed 4000 -commandfile .cmd.jlink"
             ],
             "options": {
                 "cwd": "${workspaceFolder}/",
@@ -156,9 +156,9 @@
             "type": "shell",
             "command": [
                 "echo Connect > .cmd.jlink &&",
-                "echo LoadFile \"out/image_pipeline_mram/AppKit-E8-HP/debug/image_pipeline_mram.elf\" >> .cmd.jlink &&",
+                "echo LoadFile \"out/image_pipeline_sd_fatfs/DevKit-E8-HP/release/image_pipeline_sd_fatfs.elf\" >> .cmd.jlink &&",
                 "echo Exit >> .cmd.jlink &&",
-                "JLink.exe -device AE822FA0E5597BS0_M55_HP -if swd -speed 4000 -commandfile .cmd.jlink"
+                "JLink.exe -device AE822FA0E5597LS0_M55_HP -if swd -speed 4000 -commandfile .cmd.jlink"
             ],
             "options": {
                 "cwd": "${workspaceFolder}/",
@@ -188,7 +188,7 @@
             },
             "args": [
                 "-device",
-                "AE822FA0E5597BS0_M55_HP",
+                "AE822FA0E5597LS0_M55_HP",
                 "-endian",
                 "little",
                 "-if",

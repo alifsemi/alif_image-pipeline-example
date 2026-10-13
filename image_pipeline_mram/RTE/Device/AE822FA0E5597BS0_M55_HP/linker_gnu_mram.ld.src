@@ -87,9 +87,9 @@ SECTIONS
     LONG ( LOADADDR(.data.at_dtcm) )
     LONG ( ADDR(.data.at_dtcm) )
     LONG ( SIZEOF(.data.at_dtcm)/4 )
-/*    LONG ( LOADADDR(.code.at_itcm) )
+    LONG ( LOADADDR(.code.at_itcm) )
     LONG ( ADDR(.code.at_itcm) )
-    LONG ( SIZEOF(.code.at_itcm)/4 )*/
+    LONG ( SIZEOF(.code.at_itcm)/4 )
     __copy_table_end__ = .;
     . = ALIGN(16);
   } > MRAM
@@ -147,7 +147,7 @@ SECTIONS
   {
     *(.text*)
     . = ALIGN(16);
-  } /*> ITCM AT*/ > MRAM
+  } > ITCM AT > MRAM
 
   .data.at_dtcm : ALIGN(8)
   {

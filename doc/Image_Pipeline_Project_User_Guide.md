@@ -136,9 +136,8 @@ Saved files are written to the SD card root as `IMG_0001.jpeg`, `IMG_0002.jpeg`,
 If saving fails, check card detect/reset wiring and verify the card can be mounted by FatFS (`f_mount`).  
 
 ## 8 Release Build  
-The default configuration for both targets is `debug`. This configuration is not optimized and executes from MRAM.  
-For better CPU performance (for example, AIPL NV12-to-RGB565 conversion), run critical code from ITCM by switching to a `release` build.  
-To enable `release`, open `linker_gnu_mram.ld.src` under the linker section in the CMSIS panel and remove the comment markers on the ITCM-related placement entries.  
+The release build reflects real-world SoC performance (for example, AIPL NV12-to-RGB565 conversion). It runs critical code from the ITCM.  
+To enable `release`, open `linker_gnu_mram.ld.src` under the linker section in the CMSIS panel and remove the comment markers on the ITCM-related placement entries. And select `release` from the `Build Type` section on the **Manage Solution Target** page.  
 ```
   .copy.table : ALIGN(4)
   {
@@ -159,3 +158,9 @@ To enable `release`, open `linker_gnu_mram.ld.src` under the linker section in t
     . = ALIGN(16);
   } /*> ITCM AT*/ > MRAM
   ```  
+By reserving the steps, the user can switch to debug build to step through the entire project.  
+
+## 9 Expected Frame Rate and Performance  
+The application displays FPS information on UART4. Notice that the total FPS is calculated as an entire cycle of the camera loop, instead of simply the summation of CPI + ISP + AIPL + display time then reverse. Because the camera FPS is bounded by how fast the camera is producing frames, and how fast the SoC can process each frame.  
+Our image pipeline is fast enough to follow up the camera frame rate so all the processing (ISP, AIPL, and display) takes less than a camera cycle. As a result, the app frame rate is equal to the camera frame rate. In another word, when the rest of the processings are done, the next frame is not ready yet.  
+The user should be able to see this frame rate with the out of box configuration (release build and execute from ITCM).  
