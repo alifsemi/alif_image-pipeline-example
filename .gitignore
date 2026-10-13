@@ -1,5 +1,6 @@
 out/
 tmp/
+.cmsis/
 *.cbuild-idx.yml
 *.cbuild-pack.yml
 *.cbuild-set.yml
@@ -7,3 +8,5 @@ tmp/
 *.clangd
 *_debug_*
 *_release*
+*.jpeg
+*.bin

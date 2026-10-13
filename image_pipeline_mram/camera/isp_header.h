@@ -9,7 +9,7 @@
  */
 #ifndef ISP_HEADER_H_
 #define ISP_HEADER_H_
-
+#include "RTE_Device.h"
 
 #if RTE_ISP
 #include "Driver_ISP.h"

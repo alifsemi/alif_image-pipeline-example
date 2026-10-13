@@ -209,7 +209,7 @@ int camera_capture(void)
             __WFI();
             if(g_cam_cb_events & (CAM_CB_EVENT_ERROR | ISP_CB_EVENT_ERROR))
             {
-                printf("CAM Error: 0b%08b\r\n", g_cam_cb_events);
+                printf("CAM Error: 0x%X\r\n", g_cam_cb_events);
                 return ARM_DRIVER_ERROR;
             }
         }

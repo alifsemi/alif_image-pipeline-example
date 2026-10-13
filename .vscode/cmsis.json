@@ -3,5 +3,7 @@
         "alif": {
             "activeTargetType": "AppKit-E8-HP"
         }
-    }
+    },
+    "activeSolution": "../alif.csolution.yml",
+    "activeTarget": "AppKit-E8-HP"
 }
